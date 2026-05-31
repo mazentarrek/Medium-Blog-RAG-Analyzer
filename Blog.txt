@@ -1,0 +1,47 @@
+The Willow Creek Observatory Incident of 2024
+
+On October 17, 2024, a small research team at the Willow Creek Observatory conducted an overnight experiment to measure atmospheric light distortion in a remote valley near Pine Ridge, Colorado.
+
+The team consisted of four members:
+
+Dr. Lena Hart (Project Lead)
+Omar Castillo (Systems Engineer)
+Mina Zhao (Data Analyst)
+Ethan Brooks (Field Technician)
+
+The experiment began at 8:15 PM local time and ended at 3:42 AM the following morning.
+
+The primary instrument used was the Asterion MK-3 Optical Sensor, serial number AST-MK3-88271. The sensor was mounted on Platform B7, located exactly 2.3 kilometers north of the observatory's main dome.
+
+During the test, the team collected 18,742 individual measurements. The largest recorded distortion value was 0.873 arcseconds, observed at 11:26 PM.
+
+A temporary power interruption occurred at 12:04 AM and lasted exactly 97 seconds. During this interruption, the backup generator labeled GEN-ALPHA-04 automatically activated and restored power.
+
+The weather conditions remained stable throughout most of the night:
+
+Average temperature: 6.8°C
+Lowest temperature: 3.1°C
+Average wind speed: 11 km/h
+Humidity range: 54%–68%
+
+At 1:17 AM, Omar Castillo discovered an anomaly in the sensor logs. A calibration value that should have remained fixed at 42.500 had unexpectedly changed to 42.537.
+
+Further investigation revealed that a software patch deployed three days earlier, identified as Patch WC-2024.10.14-R2, had introduced a rounding error in the calibration module.
+
+The issue affected exactly 1,284 measurements, representing approximately 6.85% of the night's collected data.
+
+Mina Zhao created a correction script named recalibrate_v3.py to repair the affected records. The script completed processing in 4 minutes and 12 seconds.
+
+After correction, the final dataset contained 18,742 valid measurements, with no data loss.
+
+The team published an internal report titled:
+
+"Analysis of Optical Distortion Variance in the Pine Ridge Valley Experiment"
+
+The report was assigned document ID:
+
+WCO-PRV-2024-117
+
+The final report was approved on October 24, 2024, by Dr. Lena Hart.
+
+As a follow-up recommendation, the observatory decided that all future calibration software would require a secondary validation process before deployment to production systems.
