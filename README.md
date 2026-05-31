@@ -1,4 +1,4 @@
-# RAG-Gist
+# LangChain RAG Demo
 
 A simple Retrieval-Augmented Generation (RAG) application built with LangChain, OpenAI Embeddings, Pinecone, and Groq.
 
