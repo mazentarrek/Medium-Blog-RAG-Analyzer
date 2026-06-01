@@ -1,10 +1,13 @@
 import os
 
 from dotenv import load_dotenv
+from operator import itemgetter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 from langchain_groq import ChatGroq
 
 
@@ -14,7 +17,7 @@ print("Initializing Components...")
 embeddings= OpenAIEmbeddings(api_key=os.environ.get("OPEN_API_KEY"))
 llm = ChatGroq(api_key=os.environ.get("GROQ_API_KEY"), model="llama-3.3-70b-versatile")
 vectorstore = PineconeVectorStore(index_name=os.environ.get("INDEX_name"), embedding=embeddings)
-retreiver = vectorstore.as_retriever(search_kwargs={"k":3})
+retriever = vectorstore.as_retriever(search_kwargs={"k":3})
 
 prompt_template = ChatPromptTemplate.from_template(
     """Answer the question base on only the following context
@@ -38,7 +41,7 @@ def format_docs(docs):
 def retieval_chain_without_lcel(query:str):
 
     # Step 1 : Retrieve relevant docs from query
-    docs = retreiver.invoke(query)
+    docs = retriever.invoke(query)
 
     # Step 2: Format documents into context string
     context = format_docs(docs)
@@ -50,6 +53,24 @@ def retieval_chain_without_lcel(query:str):
     result = llm.invoke(messages)
 
     return result.content
+
+
+def create_retrieval_chain_using_lcel():
+    """Creates a retrieval chain with LCEL (LangCHain Expression Language)
+    Returns a chain that can be invoked with a query {"question": "..."}"""
+
+    retrieval_chain = (
+
+        RunnablePassthrough.assign(
+            context=itemgetter[str]("question | retriever | format_docs")
+        )
+        | prompt_template 
+        | llm 
+        | StrOutputParser()
+    )
+
+    return retrieval_chain
+
 
 
 
